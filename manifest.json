@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "game": "Vellora Online",
+  "description": "Character cosmetics packs. Public HTTPS links, SHA-256 checked before installation.",
+  "packs": [
+    {
+      "id": "ara_v2",
+      "label": "v2 • Cabelos e roupas básicas",
+      "file": "vellora-ara-modular-v2.zip",
+      "url": "https://github.com/dk-77a/Vellora-Assets/releases/download/packs-v1/vellora-ara-modular-v2.zip",
+      "bytes": 98984473,
+      "sha256": "d00b0a2c6ad7c5db91c0fdaf2f377c72695766faab26440d64ecd8d9df3d6ecb"
+    },
+    {
+      "id": "ara_v3",
+      "label": "v3 • Roupas e peças extras",
+      "file": "vellora-ara-expansion-v3.zip",
+      "url": "https://github.com/dk-77a/Vellora-Assets/releases/download/packs-v1/vellora-ara-expansion-v3.zip",
+      "bytes": 189437153,
+      "sha256": "6be79e8178c27538227252c3a503d502f177135cdd208b9f12725c987163c2f9"
+    },
+    {
+      "id": "ara_v4",
+      "label": "v4 • Novos cabelos e roupas",
+      "file": "Vellora-Ara-3D-Gen-v4.zip",
+      "url": "https://github.com/dk-77a/Vellora-Assets/releases/download/packs-v1/Vellora-Ara-3D-Gen-v4.zip",
+      "bytes": 83326818,
+      "sha256": "ef527924ade1b89547dc2bae674e5b64e43b11a4d7796caf38562ce14ca4a72b"
+    },
+    {
+      "id": "ara_v5",
+      "label": "v5 • Calçados e sobrancelhas",
+      "file": "Vellora-Ara-3D-Gen-v5.zip",
+      "url": "https://github.com/dk-77a/Vellora-Assets/releases/download/packs-v1/Vellora-Ara-3D-Gen-v5.zip",
+      "bytes": 63247729,
+      "sha256": "fcfaedc5d3afed79b8523991dec45d8905c5e672c6b31e9f68aeebdc6c24a80a"
+    },
+    {
+      "id": "ara_v6",
+      "label": "v6 • 12 formatos de rosto 3D",
+      "file": "Vellora-Ara-Faces-v6.zip",
+      "url": "https://github.com/dk-77a/Vellora-Assets/releases/download/packs-v1/Vellora-Ara-Faces-v6.zip",
+      "bytes": 48674522,
+      "sha256": "31cfff36a259a321cc460be04c26925ccf60a6561ed2c112de72eeb6fa792c60"
+    },
+    {
+      "id": "ara_v7",
+      "label": "v7 • Narizes e bocas 3D",
+      "file": "Vellora-Ara-Face-Details-v7.zip",
+      "url": "https://github.com/dk-77a/Vellora-Assets/releases/download/packs-v1/Vellora-Ara-Face-Details-v7.zip",
+      "bytes": 697,
+      "sha256": "5fff408634a2807885ade8919dd58a7bc731dd237e552ac4f464d48ea6c3fbaf"
+    },
+    {
+      "id": "ara_v8",
+      "label": "v8 • Maquiagem e tatuagens",
+      "file": "Vellora-Ara-Cosmetics-v8.zip",
+      "url": "https://github.com/dk-77a/Vellora-Assets/releases/download/packs-v1/Vellora-Ara-Cosmetics-v8.zip",
+      "bytes": 119157,
+      "sha256": "ae7049994103491a596d50f39ce075b8c03497fdc045f6e72de98c63fc477190"
+    },
+    {
+      "id": "ara_v9",
+      "label": "v9 • Piercings e óculos",
+      "file": "Vellora-Ara-Accessories-v9.zip",
+      "url": "https://github.com/dk-77a/Vellora-Assets/releases/download/packs-v1/Vellora-Ara-Accessories-v9.zip",
+      "bytes": 1327,
+      "sha256": "8a5b88b426303625a74ad1af10068306f069a4e20917f575b2cfcf19931ed131"
+    }
+  ]
+}
