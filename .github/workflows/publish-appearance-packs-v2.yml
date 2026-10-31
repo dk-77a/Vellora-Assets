@@ -1,0 +1,114 @@
+name: Publish Vellora Appearance Packs v7-v9 (Preview Edition)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-appearance-packs-v2.yml'
+      - 'tools/appearance_previews.py'
+      - 'tools/build_face_v7.py'
+      - 'tools/build_cosmetics_v8.py'
+      - 'tools/build_accessories_v9.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vellora-packs-v2
+  cancel-in-progress: false
+
+jobs:
+  build-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate generator scripts and image dependency
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'Pillow>=11,<13'
+          python -m py_compile tools/*.py
+      - name: Generate verified v7 v8 v9 ZIPs
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          python tools/build_face_v7.py --out dist/Vellora-Ara-Face-Details-v7.zip
+          python tools/build_cosmetics_v8.py --out dist/Vellora-Ara-Cosmetics-v8.zip
+          python tools/build_accessories_v9.py --out dist/Vellora-Ara-Accessories-v9.zip
+          python - <<'PY'
+          import json, pathlib,zipfile,hashlib
+          root=pathlib.Path('dist')
+          expectations={
+            'Vellora-Ara-Face-Details-v7.zip':(7,32,33),
+            'Vellora-Ara-Cosmetics-v8.zip':(8,46,63),
+            'Vellora-Ara-Accessories-v9.zip':(9,56,57),
+          }
+          for filename,(version,count,files) in expectations.items():
+            with zipfile.ZipFile(root/filename) as z:
+              assert z.testzip() is None and len(z.namelist())==files, filename
+              cat=json.loads(z.read('catalog.json'))
+              assert cat['version']==version and len(cat['presets'])==count
+              assert len({p['id'] for p in cat['presets']})==count
+              for item in cat['presets']:
+                assert hashlib.sha256(z.read(item['preview'])).hexdigest()==item['preview_sha256']
+            print('VERIFIED',filename,(root/filename).stat().st_size)
+          PY
+      - name: Create independent v2 manifest without touching old APK users
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import copy,hashlib,json,pathlib
+          root=pathlib.Path('dist')
+          manifest=json.loads(pathlib.Path('manifest.json').read_text())
+          fresh=copy.deepcopy(manifest)
+          fresh['description']='v7-v9 expanded visual packs; v2-v6 unchanged. Legacy manifest.json remains v1.'
+          files={
+            'ara_v7':('Vellora-Ara-Face-Details-v7.zip','v7 • 32 formatos de nariz e boca'),
+            'ara_v8':('Vellora-Ara-Cosmetics-v8.zip','v8 • 46 estilos de maquiagem e tatuagens'),
+            'ara_v9':('Vellora-Ara-Accessories-v9.zip','v9 • 56 opções de brincos, piercings e óculos')
+          }
+          for entry in fresh['packs']:
+            if entry['id'] not in files: continue
+            filename,label=files[entry['id']]
+            data=(root/filename).read_bytes()
+            entry.update(file=filename,label=label,bytes=len(data),sha256=hashlib.sha256(data).hexdigest(),
+              url=f'https://github.com/dk-77a/Vellora-Assets/releases/download/packs-v2/{filename}')
+          root.joinpath('manifest-v2.json').write_text(json.dumps(fresh,ensure_ascii=False,indent=2)+'\n')
+          print('MANIFEST_V2_OK', [(e['id'],e['bytes']) for e in fresh['packs']])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Vellora-v7-v8-v9-Packs-v2
+          path: |
+            dist/*.zip
+            dist/manifest-v2.json
+          if-no-files-found: error
+      - name: Publish immutable legacy-safe replacement release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view packs-v2 >/dev/null 2>&1; then
+            gh release upload packs-v2 dist/*.zip --clobber
+          else
+            gh release create packs-v2 dist/*.zip --title "Vellora Online • Pacotes v7–v9 Atualizados" --notes "32 formatos de nariz/boca, 46 cosméticos/tatuagens, 56 acessórios 3D gerados no Godot, miniaturas PNG verificadas. Compatível com cliente Vellora que utiliza manifest-v2.json. O manifest.json antigo continua preservado."
+          fi
+          for file in dist/*.zip; do
+            test -s "$file"
+          done
+      - name: Publish new catalog ONLY after release upload succeeds
+        run: |
+          set -euo pipefail
+          cp dist/manifest-v2.json manifest-v2.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifest-v2.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish independent verified manifest-v2 for Vellora v7-v9"
+            git push origin HEAD:main
+          fi
+          echo "VELLORA_PACKS_V2_RELEASE_OK"
