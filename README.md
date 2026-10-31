@@ -1,22 +1,30 @@
-# Vellora Assets
+# Vellora Online — Recursos oficiais
 
-Repositório público de **pacotes opcionais do Vellora Online**: cabelos, roupas, rostos, maquiagem e acessórios 3D (v2–v9).
+Repositório público de pacotes opcionais de personalização. **Não contém dados de jogadores.**
 
-**O código-fonte do jogo e dados dos jogadores não ficam neste repositório.**
+## Downloads atuais (v7–v9)
 
-## Como publicar os arquivos pelo Android
+[**Pacotes v7, v8 e v9 revisados — packs-v2**](https://github.com/dk-77a/Vellora-Assets/releases/tag/packs-v2)
 
-1. Abra **Releases** neste repositório e toque em **Draft a new release**.
-2. Crie a tag `packs-v1` e anexe os arquivos ZIP dos pacotes **v2, v3, v4, v5, v6, v7, v8 e v9**, sem renomeá-los.
-3. Publique a release. Depois faça upload de `manifest.json` para a raiz da branch `main`.
-4. Confirme que o catálogo pode ser aberto sem login: https://raw.githubusercontent.com/dk-77a/Vellora-Assets/main/manifest.json
+- **v7:** 32 formatos de nariz e boca; 32 miniaturas PNG. As alterações são aplicadas à malha skinned 3D do rosto, não são GLBs separados
+- **v8:** 46 opções de maquiagem, cílios e tatuagens; 16 texturas originais de tatuagem e 46 miniaturas PNG
+- **v9:** 56 modelos/estilos de brincos, piercings e óculos, com 56 miniaturas PNG. O motor Godot cria a geometria 3D e prende os acessórios ao osso Head
 
-> **Importante:** publique o `manifest.json` **apenas depois** que os oito ZIPs estiverem disponíveis na release; caso contrário, o jogo encontrará links de download que ainda não funcionam.
+Todos os PNGs são validados por SHA-256 durante a instalação. Os tamanhos dos ZIPs variam conforme sua compressão — **mais MB não significa um modelo 3D melhor**.
 
-## Como funciona dentro do Vellora
+## Compatibilidade dos catálogos
 
-Na seleção de personagens, o botão **JOGAR** abre a Central de Downloads. Os jogadores escolhem entre baixar os ZIPs faltantes ou **JOGAR AGORA** sem downloads. O jogo confere o SHA-256, o tamanho do ZIP e a versão antes de instalar na pasta do aplicativo.
+- `manifest.json` → **packs-v1**, preservado para APKs antigos
+- [`manifest-v2.json`](https://raw.githubusercontent.com/dk-77a/Vellora-Assets/main/manifest-v2.json) → novos ZIPs v7/v8/v9 e os mesmos v2–v6 anteriores
 
-## Publicação de atualizações
+O Vellora atualizado consulta `manifest-v2.json` e recorre ao catálogo antigo se a nova versão estiver indisponível. **Não atualize `manifest.json` com os novos ZIPs**, pois APKs sem suporte a miniaturas rejeitariam a instalação.
 
-Quando substituir um ZIP, atualize `sha256` e `bytes` no `manifest.json` e publique um novo arquivo na release. Não publique chaves, credenciais, código-fonte privado nem arquivos pessoais dos jogadores.
+## Como usar no Vellora
+
+No seletor de personagens, toque no botão **RECURSOS** no canto superior direito. Na central, use **ATUALIZAR**, **BAIXAR FALTANTES** ou **VOLTAR**. O botão **JOGAR** leva diretamente à seleção de spawn; downloads são opcionais.
+
+## Como gerar e publicar (mantenedor)
+
+Os geradores ficam em [`tools/`](https://github.com/dk-77a/Vellora-Assets/tree/main/tools). A automação `Publish Vellora Appearance Packs v7-v9 (Preview Edition)` cria os três ZIPs, testa as imagens e os hashes, publica a release `packs-v2` e só então publica `manifest-v2.json`. A publicação é segura contra catálogos apontando para arquivos inexistentes.
+
+Não publique senhas, tokens ou informações privadas.
